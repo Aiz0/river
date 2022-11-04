@@ -265,7 +265,7 @@ fn renderSurfaceIterator(
     surface_x: c_int,
     surface_y: c_int,
     rdata: *SurfaceRenderData,
-) callconv(.C) void {
+) void {
     const texture = surface.getTexture() orelse return;
 
     var source_box: wlr.FBox = undefined;

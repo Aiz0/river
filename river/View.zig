@@ -237,7 +237,7 @@ fn saveBuffersIterator(
     surface_x: c_int,
     surface_y: c_int,
     saved_buffers: *std.ArrayListUnmanaged(SavedBuffer),
-) callconv(.C) void {
+) void {
     if (surface.buffer) |buffer| {
         var source_box: wlr.FBox = undefined;
         surface.getBufferSourceBox(&source_box);
@@ -323,7 +323,7 @@ fn sendEnter(self: *Self, output: *Output) void {
     self.forEachSurface(*wlr.Output, sendEnterIterator, output.wlr_output);
 }
 
-fn sendEnterIterator(surface: *wlr.Surface, _: c_int, _: c_int, wlr_output: *wlr.Output) callconv(.C) void {
+fn sendEnterIterator(surface: *wlr.Surface, _: c_int, _: c_int, wlr_output: *wlr.Output) void {
     surface.sendEnter(wlr_output);
 }
 
@@ -331,7 +331,7 @@ fn sendLeave(self: *Self, output: *Output) void {
     self.forEachSurface(*wlr.Output, sendLeaveIterator, output.wlr_output);
 }
 
-fn sendLeaveIterator(surface: *wlr.Surface, _: c_int, _: c_int, wlr_output: *wlr.Output) callconv(.C) void {
+fn sendLeaveIterator(surface: *wlr.Surface, _: c_int, _: c_int, wlr_output: *wlr.Output) void {
     surface.sendLeave(wlr_output);
 }
 
@@ -369,7 +369,7 @@ pub fn setResizing(self: Self, resizing: bool) void {
 pub inline fn forEachSurface(
     self: Self,
     comptime T: type,
-    iterator: fn (surface: *wlr.Surface, sx: c_int, sy: c_int, data: T) callconv(.C) void,
+    comptime iterator: fn (surface: *wlr.Surface, sx: c_int, sy: c_int, data: T) void,
     user_data: T,
 ) void {
     switch (self.impl) {
@@ -480,7 +480,7 @@ pub fn shouldTrackConfigure(self: Self) bool {
 
 /// Called by the impl when the surface is ready to be displayed
 pub fn map(self: *Self) !void {
-    log.debug("view '{s}' mapped", .{self.getTitle()});
+    log.debug("view '{?s}' mapped", .{self.getTitle()});
 
     {
         assert(self.foreign_toplevel_handle == null);
@@ -518,7 +518,7 @@ pub fn map(self: *Self) !void {
 
 /// Called by the impl when the surface will no longer be displayed
 pub fn unmap(self: *Self) void {
-    log.debug("view '{s}' unmapped", .{self.getTitle()});
+    log.debug("view '{?s}' unmapped", .{self.getTitle()});
 
     if (self.saved_buffers.items.len == 0) self.saveBuffers();
 

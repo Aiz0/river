@@ -104,7 +104,7 @@ pub fn main() anyerror!void {
         .mask = os.empty_sigset,
         .flags = 0,
     };
-    os.sigaction(os.SIG.PIPE, &sig_ign, null);
+    try os.sigaction(os.SIG.PIPE, &sig_ign, null);
 
     std.log.info("initializing server", .{});
     try server.init();

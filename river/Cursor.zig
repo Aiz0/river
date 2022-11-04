@@ -206,7 +206,7 @@ pub fn setTheme(self: *Self, theme: ?[*:0]const u8, _size: ?u32) !void {
     while (it) |node| : (it = node.next) {
         const wlr_output = node.data.wlr_output;
         self.xcursor_manager.load(wlr_output.scale) catch
-            log.err("failed to load xcursor theme '{s}' at scale {}", .{ theme, wlr_output.scale });
+            log.err("failed to load xcursor theme '{?s}' at scale {}", .{ theme, wlr_output.scale });
     }
 
     // If this cursor belongs to the default seat, set the xcursor environment
@@ -215,12 +215,12 @@ pub fn setTheme(self: *Self, theme: ?[*:0]const u8, _size: ?u32) !void {
     if (self.seat == server.input_manager.defaultSeat()) {
         const size_str = try std.fmt.allocPrintZ(util.gpa, "{}", .{size});
         defer util.gpa.free(size_str);
-        if (c.setenv("XCURSOR_SIZE", size_str, 1) < 0) return error.OutOfMemory;
+        if (c.setenv("XCURSOR_SIZE", size_str.ptr, 1) < 0) return error.OutOfMemory;
         if (theme) |t| if (c.setenv("XCURSOR_THEME", t, 1) < 0) return error.OutOfMemory;
 
         if (build_options.xwayland) {
             self.xcursor_manager.load(1) catch {
-                log.err("failed to load xcursor theme '{s}' at scale 1", .{theme});
+                log.err("failed to load xcursor theme '{?s}' at scale 1", .{theme});
                 return;
             };
             const wlr_xcursor = self.xcursor_manager.getXcursor("left_ptr", 1).?;
@@ -616,7 +616,7 @@ pub fn unhide(self: *Self) void {
     self.updateState();
 }
 
-fn handleHideCursorTimeout(self: *Self) callconv(.C) c_int {
+fn handleHideCursorTimeout(self: *Self) c_int {
     log.debug("hide cursor timeout", .{});
     self.hide();
     return 0;

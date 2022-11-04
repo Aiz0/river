@@ -453,7 +453,7 @@ pub fn clearRepeatingMapping(self: *Self) void {
 }
 
 /// Repeat key mapping
-fn handleMappingRepeatTimeout(self: *Self) callconv(.C) c_int {
+fn handleMappingRepeatTimeout(self: *Self) c_int {
     if (self.repeating_mapping) |mapping| {
         const rate = server.config.repeat_rate;
         const ms_delay = if (rate > 0) 1000 / rate else 0;
