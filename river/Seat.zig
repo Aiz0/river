@@ -48,7 +48,7 @@ const PointerConstraint = @import("PointerConstraint.zig");
 
 const FocusTarget = union(enum) {
     view: *View,
-    xwayland_override_redirect: *XwaylandOverrideRedirect,
+    xwayland_override_redirect: if (build_options.xwayland) *XwaylandOverrideRedirect else noreturn,
     layer: *LayerSurface,
     none: void,
 };
